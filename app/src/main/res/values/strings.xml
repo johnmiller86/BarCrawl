@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Bar Crawl</string>
+    <string name="title_activity_maps">Find a Bar</string>
+    <string name="cancel">Cancel</string>
+    <string name="allow">Allow</string>
+    <string name="settings">Settings</string>
+</resources>
