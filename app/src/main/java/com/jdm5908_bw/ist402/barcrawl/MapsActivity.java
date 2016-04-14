@@ -1,9 +1,13 @@
 package com.jdm5908_bw.ist402.barcrawl;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -24,68 +28,106 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author Jalyn with help from John D. Miller.
+ */
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+
+    // ID Constants
     private final int REQUEST_PERMISSION = 1;
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2;
-    private final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 3;
+    private final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
+    private final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 4;
+
+    // Debug tag
     private final String TAG = "MapsActivity Tag";
+
+    // UI Components
     private GoogleMap mMap;
+    private List<LatLng> latLngs;
+    private List<Marker> markers;
+    private PolylineOptions polylineOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        latLngs = new ArrayList<>();
     }
 
+    /**
+     * Opens the Autocomplete Intent to search bar/restaurants.
+     * @param view
+     */
     public void search(View view) {
-//        EditText locationET = (EditText) findViewById(R.id.editText);
-//        String location = locationET.getText().toString();
-//        List<Address> addressList = null;
-//        if (location != null || location.equals("")){
-//            Geocoder geocoder = new Geocoder(this);
-//            try {
-//                addressList = geocoder.getFromLocationName(location, 1);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            Address address = addressList.get(0);
-//            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-//            mMap.addMarker(new MarkerOptions().position(latLng).title("Marker"));
-//            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-//        }
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        try {
+            AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                    .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ESTABLISHMENT)
+                    .build();
+
+            Intent intent =
+                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                            .setFilter(typeFilter)
+                            .build(this);
+            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+        } catch (GooglePlayServicesRepairableException e) {
+            Log.e(TAG, e.getMessage());
+        } catch (GooglePlayServicesNotAvailableException e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
-    // A place has been received; use requestCode to track the request.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
+
+                // Getting Establishment
                 Place place = PlaceAutocomplete.getPlace(this, data);
-                mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
+
+                // Adding dto list
+                latLngs.add(place.getLatLng());
+
+                // Configuring and adding marker
+                //MarkerOptions markerOptions = (new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
+                Marker marker = mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
+                markers.add(marker);
+
+                // Moving to marker and zooming in
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
-                //Log.i(TAG, "Place: " + place.getName());
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+
+                // Connecting latLngs
+                connectMarkers();
+            }
+            else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
                 // TODO: Handle the error.
-                Log.i(TAG, status.getStatusMessage());
+                Log.i(TAG, status.getStatusMessage()); // Logging
 
-            } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
+            }
+            else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation do nothing.
             }
         }
     }
 
     public void changeMapType(View view){
         if (mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL){
-            mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         }
         else{
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -96,24 +138,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        // Map Permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
             return;
         }
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
-
+        // Getting current location
         mMap.setMyLocationEnabled(true);
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        try {
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            //mMap.addMarker(new MarkerOptions().position(latLng).title("You are here"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+            //displayMarkers(latLng);
+            drawCircle(latLng);
+        }catch(NullPointerException e){
+            Log.e(TAG, e.getMessage());
+        }
     }
+
 
     /**
      * Handles operations based on permission results.
@@ -127,27 +173,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 // Granted
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    try {
-                        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-                                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ESTABLISHMENT)
-                                .build();
-
-                        Intent intent =
-                                new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
-                                        .setFilter(typeFilter)
-                                        .build(this);
-                        startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
-                    } catch (GooglePlayServicesRepairableException e) {
-                        // TODO: Handle the error.
-                    } catch (GooglePlayServicesNotAvailableException e) {
-                        // TODO: Handle the error.
-                    }
+                    // Do nothing granted.
                 }
                 // Blocked
-                else if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
+                else if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                     new AlertDialog.Builder(this)
                             .setTitle("Permission was blocked!")
-                            .setMessage("You have previously blocked this app from accessing location. This app will not function without this access. Would you like to go to settings and allow this permission?")
+                            .setMessage("You have previously blocked this app from accessing fine location. This app will not function without this access. Would you like to go to settings and allow this permission?")
 
                             // Open Settings button
                             .setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
@@ -169,12 +201,63 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 else {
                     new AlertDialog.Builder(this)
                             .setTitle("Permission was denied!")
-                            .setMessage("This app will not function without access to location. Would you like to allow access?")
+                            .setMessage("This app will not function without access to fine location. Would you like to allow access?")
 
                             // Open Settings button
                             .setPositiveButton(R.string.allow, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                                    ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                                }
+                            })
+
+                            // Denied, close app
+                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+                return;
+            }
+            case MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION: {
+                // Granted
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Do nothing granted.
+                }
+                // Blocked
+                else if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Permission was blocked!")
+                            .setMessage("You have previously blocked this app from accessing coarse location. This app will not function without this access. Would you like to go to settings and allow this permission?")
+
+                            // Open Settings button
+                            .setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    goToSettings();
+                                }
+                            })
+
+                            // Denied, close app
+                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+                // Denied
+                else {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Permission was denied!")
+                            .setMessage("This app will not function without access to coarse location. Would you like to allow access?")
+
+                            // Open Settings button
+                            .setPositiveButton(R.string.allow, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
                                 }
                             })
 
@@ -200,5 +283,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Uri uri = Uri.fromParts("package", getPackageName(), null);
         intent.setData(uri);
         startActivityForResult(intent, REQUEST_PERMISSION);
+    }
+
+    /**
+     * Shows map latLngs around user's location.
+     * @param location the user's location.
+     */
+    private void displayMarkers(LatLng location){
+
+    }
+
+    /**
+     * Draws a circle around the user to illustrate the current marker radius.
+     * @param location the use'rs location.
+     */
+    private void drawCircle(LatLng location){
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (Marker marker : markers){
+            builder.include(marker.getPosition());
+        }
+        LatLngBounds bounds = builder.build();
+
+        CircleOptions options = new CircleOptions();
+        options.center(bounds.getCenter());
+        options.radius(1000);
+        options.fillColor(R.color.colorPrimary);
+        options.strokeColor(R.color.colorPrimaryDark);
+        options.strokeWidth(10);
+        mMap.addCircle(options);
+    }
+
+    private void connectMarkers(){
+        if (latLngs.size() > 1){
+            polylineOptions = new PolylineOptions();
+            polylineOptions.color(Color.RED);
+            polylineOptions.width(5);
+            polylineOptions.addAll(latLngs);
+            mMap.addPolyline(polylineOptions);
+        }
     }
 }
