@@ -112,6 +112,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 // Connecting latLngs
                 connectMarkers();
+                drawCircle();
             }
             else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
@@ -154,7 +155,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //mMap.addMarker(new MarkerOptions().position(latLng).title("You are here"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
             //displayMarkers(latLng);
-            drawCircle(latLng);
+            //drawCircle(latLng);
         }catch(NullPointerException e){
             Log.e(TAG, e.getMessage());
         }
@@ -295,9 +296,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /**
      * Draws a circle around the user to illustrate the current marker radius.
-     * @param location the use'rs location.
      */
-    private void drawCircle(LatLng location){
+    private void drawCircle(){
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (Marker marker : markers){
             builder.include(marker.getPosition());
