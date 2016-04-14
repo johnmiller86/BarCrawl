@@ -295,7 +295,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * Draws a circle around the user to illustrate the current marker radius.
+     * Draws a circle around the user to illustrate the current marker radius. lklklkj
      */
     private void drawCircle(){
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
