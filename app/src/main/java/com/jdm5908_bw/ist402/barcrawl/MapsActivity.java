@@ -57,7 +57,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private List<LatLng> latLngs;
     private List<Marker> markers;
-    private PolylineOptions polylineOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +66,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         latLngs = new ArrayList<>();
+        markers = new ArrayList<>();
     }
 
     /**
@@ -315,7 +315,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void connectMarkers(){
         if (latLngs.size() > 1){
-            polylineOptions = new PolylineOptions();
+            PolylineOptions polylineOptions = new PolylineOptions();
             polylineOptions.color(Color.RED);
             polylineOptions.width(5);
             polylineOptions.addAll(latLngs);

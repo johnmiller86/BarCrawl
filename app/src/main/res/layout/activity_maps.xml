@@ -11,16 +11,16 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Find Bar"
+            android:text="@string/find_bar"
             android:id="@+id/searchButton"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:onClick="search"
             android:layout_alignParentStart="true" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Map Type"
+            android:text="@string/map_type"
             android:id="@+id/typeButton"
             android:onClick="changeMapType"
             android:layout_alignParentEnd="true" />
