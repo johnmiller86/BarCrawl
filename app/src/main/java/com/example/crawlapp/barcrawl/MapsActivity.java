@@ -51,6 +51,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
     private final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 4;
 
+    // Extra comment
     // Debug tag
     private final String TAG = "MapsActivity Tag";
 
