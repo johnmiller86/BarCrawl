@@ -1,4 +1,4 @@
-package com.jdm5908_bw.ist402.barcrawl;
+package com.example.crawlapp.barcrawl;
 
 import android.Manifest;
 import android.content.Context;
