@@ -337,7 +337,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Zooming out to show bounds
         if (latLngs.size() > 1) {
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 30);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 0);
             mMap.animateCamera(cameraUpdate);
         }
     }
