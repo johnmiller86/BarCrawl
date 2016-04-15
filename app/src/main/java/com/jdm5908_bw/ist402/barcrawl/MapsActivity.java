@@ -24,6 +24,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -58,6 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<LatLng> latLngs;
     private List<Marker> markers;
     private PolylineOptions polylineOptions;
+    LatLngBounds.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         latLngs = new ArrayList<>();
+        markers = new ArrayList<>();
     }
 
     /**
@@ -105,6 +108,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // Configuring and adding marker
                 //MarkerOptions markerOptions = (new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
                 Marker marker = mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
+                marker.showInfoWindow();
                 markers.add(marker);
 
                 // Moving to marker and zooming in
@@ -298,19 +302,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Draws a circle around the user to illustrate the current marker radius. lklklkj
      */
     private void drawCircle(){
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder = new LatLngBounds.Builder();
+        float[] radius = new float[1];
+        float[] temp = new float[1];
+
+        // Getting the radius of the circle to be drawn
+        if (latLngs.size() >= 2){
+            Location.distanceBetween(latLngs.get(0).latitude, latLngs.get(0).longitude, latLngs.get(1).latitude, latLngs.get(1).longitude, radius);
+            for (int i = 2; i < latLngs.size(); i++){
+                Location.distanceBetween(latLngs.get(i - 1).latitude, latLngs.get(i - 1).longitude, latLngs.get(i).latitude, latLngs.get(i).longitude, temp);
+                if (temp[0] > radius[0]){
+                    radius[0] = temp[0];
+                }
+            }
+        }
+        else{
+            radius[0] = 0;
+        }
+
+        // Getting position of markers
         for (Marker marker : markers){
             builder.include(marker.getPosition());
         }
         LatLngBounds bounds = builder.build();
 
+        // Drawing circle around bounds center
         CircleOptions options = new CircleOptions();
         options.center(bounds.getCenter());
-        options.radius(1000);
+        options.radius(radius[0]);
         options.fillColor(R.color.colorPrimary);
         options.strokeColor(R.color.colorPrimaryDark);
         options.strokeWidth(10);
         mMap.addCircle(options);
+
+        // Zooming out to show bounds
+        if (latLngs.size() > 1) {
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 30);
+            mMap.animateCamera(cameraUpdate);
+        }
     }
 
     private void connectMarkers(){
