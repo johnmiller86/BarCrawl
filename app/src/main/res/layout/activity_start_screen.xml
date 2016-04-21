@@ -7,6 +7,44 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.jdm5908_bw.ist402.barcrawl.StartScreenActivity">
+    tools:context=".StartScreenActivity">
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/create_a_crawl"
+        android:id="@+id/createCrawlButton"
+        android:background="#df2828"
+        android:textSize="20dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="CreateCrawl" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/load_a_crawl"
+        android:id="@+id/loadCrawlButton"
+        android:background="#df2828"
+        android:textSize="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="82dp"
+        android:onClick="LoadCrawl"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/imageView"
+        android:layout_alignEnd="@+id/createCrawlButton" />
 </RelativeLayout>

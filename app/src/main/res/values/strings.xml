@@ -9,4 +9,12 @@
     <string name="button_login">Login</string>
     <string name="username_text">Username</string>
     <string name="password_text">Password</string>
+    <string name="create_a_crawl">Create a crawl</string>
+    <string name="load_a_crawl">Load a crawl</string>
+
+    <!-- Facebook stuff -->
+    <string name="facebook_app_id">570415306452657</string>
+    <string name="action_show_access_token_title">Print Access Token</string>
+    <string name="title_activity_access_token">AccessTokenActivity</string>
+    <string name="title_activity_show_access_token">ShowAccessTokenActivity</string>
 </resources>
