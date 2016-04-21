@@ -56,7 +56,6 @@ public class LoginActivity extends AppCompatActivity{
         facebookLoginButton = (LoginButton) findViewById(R.id.facebookButton);
         editText_username= (EditText)findViewById(R.id.editText_username);
         editText_password= (EditText)findViewById(R.id.editText_password);
-
         facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -91,7 +90,7 @@ public class LoginActivity extends AppCompatActivity{
 
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.example.root.logintest",
+                    "com.example.crawlapp.barcrawl",
                     PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
