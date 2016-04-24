@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -160,10 +159,5 @@ public class LoginActivity extends AppCompatActivity{
             }
         };
     }
-
-//    private void clearUserArea() {
-//        info.setText("");
-//        profileImgView.setImageDrawable(null);
-//    }
 }
 

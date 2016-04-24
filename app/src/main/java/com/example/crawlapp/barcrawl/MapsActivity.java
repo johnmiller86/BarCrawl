@@ -24,7 +24,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -59,7 +58,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<LatLng> latLngs;
     private List<Marker> markers;
     private PolylineOptions polylineOptions;
-    LatLngBounds.Builder builder;
+    private CircleOptions circleOptions;
+    private LatLngBounds.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         latLngs = new ArrayList<>();
         markers = new ArrayList<>();
+        circleOptions = new CircleOptions();
     }
 
     /**
@@ -295,7 +296,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @param location the user's location.
      */
     private void displayMarkers(LatLng location){
-
+        // TODO Needs JSON/JavaScript
     }
 
     /**
@@ -326,22 +327,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         LatLngBounds bounds = builder.build();
 
-        // Drawing circle around bounds center
-        CircleOptions options = new CircleOptions();
-        options.center(bounds.getCenter());
-        options.radius(radius[0]);
-        options.fillColor(R.color.colorPrimary);
-        options.strokeColor(R.color.colorPrimaryDark);
-        options.strokeWidth(10);
-        mMap.addCircle(options);
+//        circleOptions.center(bounds.getCenter());
+//        circleOptions.radius(radius[0]);
+//        circleOptions.fillColor(R.color.colorPrimary);
+//        circleOptions.strokeColor(R.color.colorPrimaryDark);
+//        circleOptions.strokeWidth(5);
+//        mMap.addCircle(circleOptions);
 
         // Zooming out to show bounds
-        if (latLngs.size() > 1) {
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 0);
-            mMap.animateCamera(cameraUpdate);
+        if (latLngs.size() > 1){
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 80));
         }
     }
 
+    /**
+     * Draws lines between markers.
+     */
     private void connectMarkers(){
         if (latLngs.size() > 1){
             polylineOptions = new PolylineOptions();

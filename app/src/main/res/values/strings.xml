@@ -3,8 +3,8 @@
     <string name="cancel">Cancel</string>
     <string name="allow">Allow</string>
     <string name="settings">Settings</string>
-    <string name="find_bar">Find Bar</string>
-    <string name="map_type">Map Type</string>
+    <string name="find_bar">Add Bar/Restaurant</string>
+    <string name="map_type">Change Map Type</string>
     <string name="login_text">Login</string>
     <string name="button_login">Login</string>
     <string name="username_text">Username</string>

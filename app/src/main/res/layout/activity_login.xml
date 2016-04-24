@@ -83,7 +83,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Bar Crawl"
         android:id="@+id/textView5"
-        android:textColor="#eb0d0d"
+        android:textColor="#df2828"
         android:textSize="50dp"
         android:textAlignment="center"
         android:layout_below="@+id/textView_login"
