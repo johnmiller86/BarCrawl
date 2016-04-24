@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,6 +35,7 @@ public class LoginActivity extends AppCompatActivity{
     private TextView info;
     private ImageView profileImgView;
     private LoginButton facebookLoginButton;
+    private Button loginButton;
     private PrefUtil prefUtil;
     private IntentUtil intentUtil;
     private EditText editText_username;
@@ -54,13 +56,13 @@ public class LoginActivity extends AppCompatActivity{
         info = (TextView) findViewById(R.id.info);
         //profileImgView = (ImageView) findViewById(R.id.profile_img);
         facebookLoginButton = (LoginButton) findViewById(R.id.facebookButton);
-        editText_username= (EditText)findViewById(R.id.editText_username);
-        editText_password= (EditText)findViewById(R.id.editText_password);
+        editText_username = (EditText) findViewById(R.id.editText_username);
+        editText_password = (EditText) findViewById(R.id.editText_password);
+        loginButton = (Button) findViewById(R.id.button_login);
         facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Profile profile = Profile.getCurrentProfile();
-                info.setText(message(profile));
 
                 String userId = loginResult.getAccessToken().getUserId();
                 String accessToken = loginResult.getAccessToken().getToken();
@@ -70,37 +72,35 @@ public class LoginActivity extends AppCompatActivity{
 
                 String profileImgUrl = "https://graph.facebook.com/" + userId + "/picture?type=large";
 
-
-                Glide.with(LoginActivity.this)
-                        .load(profileImgUrl)
-                        .into(profileImgView);
+                Intent intent = new Intent(LoginActivity.this, StartScreenActivity.class);
+                intent.putExtra("USERNAME", profile.getName());
+                intent.putExtra("PROFILE_IMAGE_URL", profileImgUrl);
+                startActivity(intent);
+//
             }
 
             @Override
-            public void onCancel() {
-                info.setText("Login attempt cancelled.");
-            }
+            public void onCancel() {}
 
             @Override
             public void onError(FacebookException e) {
                 e.printStackTrace();
-                info.setText("Login attempt failed.");
             }
         });
 
+        // Generating Facebook Keyhash..
         try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.example.crawlapp.barcrawl",
-                    PackageManager.GET_SIGNATURES);
+            PackageInfo info = getPackageManager().getPackageInfo("com.example.crawlapp.barcrawl", PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());
                 Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
         } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
 
         } catch (NoSuchAlgorithmException e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -114,6 +114,7 @@ public class LoginActivity extends AppCompatActivity{
         else{
             if (attemptsCount == 0) {
                 facebookLoginButton.setEnabled(false);
+                loginButton.setEnabled(false);
                 Toast.makeText(LoginActivity.this, "You have been locked out due to too many incorrect attempts!", Toast.LENGTH_SHORT).show();
             }
             else {
@@ -128,7 +129,6 @@ public class LoginActivity extends AppCompatActivity{
         super.onResume();
         deleteAccessToken();
         Profile profile = Profile.getCurrentProfile();
-        //info.setText(message(profile));
     }
 
 
@@ -155,15 +155,15 @@ public class LoginActivity extends AppCompatActivity{
                 if (currentAccessToken == null){
                     //User logged out
                     prefUtil.clearToken();
-                    clearUserArea();
+                   // clearUserArea();
                 }
             }
         };
     }
 
-    private void clearUserArea() {
-        info.setText("");
-        profileImgView.setImageDrawable(null);
-    }
+//    private void clearUserArea() {
+//        info.setText("");
+//        profileImgView.setImageDrawable(null);
+//    }
 }
 
