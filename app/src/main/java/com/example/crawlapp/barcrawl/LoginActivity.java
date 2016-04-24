@@ -105,9 +105,11 @@ public class LoginActivity extends AppCompatActivity{
 
     public void Login(View view) {
 
-        if(editText_username.getText().toString().equals("")&& editText_password.getText().toString().equals("")){
-            Toast.makeText(LoginActivity.this, "Username and Password are correct", Toast.LENGTH_SHORT).show();
+//        if(editText_username.getText().toString().equals("")&& editText_password.getText().toString().equals("")){
+        boolean authenticated = true;
+        if(authenticated){
             Intent intent = new Intent(this, StartScreenActivity.class);
+            intent.putExtra("USERNAME", editText_username.getText().toString());
             startActivity(intent);
         }
         else{

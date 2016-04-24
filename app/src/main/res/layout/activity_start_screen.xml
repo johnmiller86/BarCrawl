@@ -35,8 +35,8 @@
         android:onClick="LoadCrawl"/>
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/imageView" />
 
     <TextView
@@ -45,6 +45,6 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:id="@+id/textView2"
-        android:layout_below="@+id/imageView"
         android:layout_alignEnd="@+id/createCrawlButton" />
+
 </RelativeLayout>

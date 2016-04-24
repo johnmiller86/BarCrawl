@@ -17,6 +17,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -56,6 +58,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // UI Components
     private GoogleMap mMap;
     private List<LatLng> latLngs;
+    private ListView listView;
+    private List<String> locations;
+    private ArrayAdapter<String> arrayAdapter;
     private List<Marker> markers;
     private PolylineOptions polylineOptions;
     private CircleOptions circleOptions;
@@ -71,6 +76,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         latLngs = new ArrayList<>();
         markers = new ArrayList<>();
         circleOptions = new CircleOptions();
+        listView = (ListView) findViewById(R.id.listView);
+        locations = new ArrayList<>();
+        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, locations);
+        listView.setAdapter(arrayAdapter);
     }
 
     /**
@@ -111,6 +120,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Marker marker = mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
                 marker.showInfoWindow();
                 markers.add(marker);
+                fillListView();
 
                 // Moving to marker and zooming in
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
@@ -351,5 +361,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             polylineOptions.addAll(latLngs);
             mMap.addPolyline(polylineOptions);
         }
+    }
+
+    private void fillListView(){
+        locations = new ArrayList<>();
+        for (int i = 0; i < markers.size(); i++){
+            locations.add(i + 1 + ")\t" + markers.get(i).getTitle());
+        }
+        arrayAdapter.notifyDataSetChanged();
     }
 }
