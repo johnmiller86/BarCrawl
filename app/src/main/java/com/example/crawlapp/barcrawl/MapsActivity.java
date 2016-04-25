@@ -16,7 +16,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -56,7 +60,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // UI Components/Instance Vars
     private GoogleMap mMap;
-    private List<LatLng> latLngs;
     private ListView listView;
     private ArrayList<String> locations;
     private ArrayAdapter<String> arrayAdapter;
@@ -71,12 +74,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        latLngs = new ArrayList<>();
         markers = new ArrayList<>();
         listView = (ListView) findViewById(R.id.listView);
         locations = new ArrayList<>();
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, locations);
         listView.setAdapter(arrayAdapter);
+        registerForContextMenu(listView);
+    }
+
+    // Context Menu
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item)
+    {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch(item.getItemId()){
+
+            case R.id.remove:
+
+                // Removing item
+                locations.remove(info.position);
+                markers.remove(info.position);
+                //latLngs.remove(info.position);
+                arrayAdapter.notifyDataSetChanged();
+                resetMap();
+                return true;
+
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     /**
@@ -94,9 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             .setFilter(typeFilter)
                             .build(this);
             startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
-        } catch (GooglePlayServicesRepairableException e) {
-            Log.e(TAG, e.getMessage());
-        } catch (GooglePlayServicesNotAvailableException e) {
+        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
             Log.e(TAG, e.getMessage());
         }
     }
@@ -108,9 +138,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 // Getting Establishment
                 Place place = PlaceAutocomplete.getPlace(this, data);
-
-                // Adding dto list
-                latLngs.add(place.getLatLng());
 
                 // Configuring and adding marker
                 Marker marker = mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
@@ -135,6 +162,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation do nothing.
+                Log.i(TAG, "User cancelled action"); // Logging
             }
         }
     }
@@ -188,6 +216,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // Granted
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Do nothing granted.
+                    Log.i(TAG, "Permission was granted"); // Logging
                 }
                 // Blocked
                 else if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -239,6 +268,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // Granted
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Do nothing granted.
+                    Log.i(TAG, "Permission was granted"); // Logging
                 }
                 // Blocked
                 else if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
@@ -284,7 +314,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
                 }
-                return;
             }
         }
     }
@@ -308,10 +337,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         float[] temp = new float[1];
 
         // Getting the distance between farthest markers
-        if (latLngs.size() >= 2){
-            Location.distanceBetween(latLngs.get(0).latitude, latLngs.get(0).longitude, latLngs.get(1).latitude, latLngs.get(1).longitude, radius);
-            for (int i = 2; i < latLngs.size(); i++){
-                Location.distanceBetween(latLngs.get(i - 1).latitude, latLngs.get(i - 1).longitude, latLngs.get(i).latitude, latLngs.get(i).longitude, temp);
+        if (markers.size() > 1){
+            Location.distanceBetween(markers.get(0).getPosition().latitude, markers.get(0).getPosition().longitude, markers.get(1).getPosition().latitude, markers.get(1).getPosition().longitude, radius);
+            for (int i = 2; i < markers.size(); i++){
+                Location.distanceBetween(markers.get(i - 1).getPosition().latitude, markers.get(i - 1).getPosition().longitude, markers.get(i).getPosition().latitude, markers.get(i).getPosition().longitude, temp);
                 if (temp[0] > radius[0]){
                     radius[0] = temp[0];
                 }
@@ -328,8 +357,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLngBounds bounds = builder.build();
 
         // Zooming out to show bounds
-        if (latLngs.size() > 1){
+        if (markers.size() > 1){
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 80));
+        }
+        else{
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markers.get(0).getPosition(), 15));
         }
     }
 
@@ -337,11 +369,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Draws lines between markers.
      */
     private void connectMarkers(){
-        if (latLngs.size() > 1){
+        if (markers.size() > 1){
             polylineOptions = new PolylineOptions();
             polylineOptions.color(Color.RED);
             polylineOptions.width(5);
-            polylineOptions.addAll(latLngs);
+            for (Marker marker : markers){
+                polylineOptions.add(marker.getPosition());
+            }
             mMap.addPolyline(polylineOptions);
         }
     }
@@ -352,8 +386,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void fillListView(){
         locations.clear();
         for (int i = 0; i < markers.size(); i++){
-            locations.add(i + 1 + ")\t" + markers.get(i).getTitle());
+            locations.add((i + 1) + ")\t" + markers.get(i).getTitle());
         }
         arrayAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Rebuilds the map after clearing.
+     */
+    private void resetMap(){
+        mMap.clear();
+        polylineOptions = new PolylineOptions();
+        for (Marker marker : markers){
+            mMap.addMarker(new MarkerOptions().position(marker.getPosition()).title(marker.getTitle()));
+        }
+        if (markers.size() > 0) {
+            connectMarkers();
+            zoomToBounds();
+        }
     }
 }

@@ -17,7 +17,7 @@
         android:text="@string/create_a_crawl"
         android:id="@+id/createCrawlButton"
         android:background="@drawable/button"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:onClick="CreateCrawl" />
@@ -29,7 +29,7 @@
         android:text="@string/load_a_crawl"
         android:id="@+id/loadCrawlButton"
         android:background="@drawable/button"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="82dp"
@@ -38,13 +38,13 @@
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:id="@+id/imageView" />
+        android:id="@+id/imageView"
+        android:contentDescription="@string/profile_pic"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
         android:id="@+id/textView2"
         android:layout_alignEnd="@+id/createCrawlButton" />
 
