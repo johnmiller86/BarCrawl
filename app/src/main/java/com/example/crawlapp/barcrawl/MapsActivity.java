@@ -156,7 +156,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
-                // TODO: Handle the error.
                 Log.i(TAG, status.getStatusMessage()); // Logging
 
             }
