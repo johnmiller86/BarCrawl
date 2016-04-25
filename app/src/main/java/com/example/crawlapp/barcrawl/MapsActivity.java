@@ -30,7 +30,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -55,15 +54,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // Debug tag
     private final String TAG = "MapsActivity Tag";
 
-    // UI Components
+    // UI Components/Instance Vars
     private GoogleMap mMap;
     private List<LatLng> latLngs;
     private ListView listView;
-    private List<String> locations;
+    private ArrayList<String> locations;
     private ArrayAdapter<String> arrayAdapter;
     private List<Marker> markers;
     private PolylineOptions polylineOptions;
-    private CircleOptions circleOptions;
     private LatLngBounds.Builder builder;
 
     @Override
@@ -75,7 +73,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         latLngs = new ArrayList<>();
         markers = new ArrayList<>();
-        circleOptions = new CircleOptions();
         listView = (ListView) findViewById(R.id.listView);
         locations = new ArrayList<>();
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, locations);
@@ -84,7 +81,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /**
      * Opens the Autocomplete Intent to search bar/restaurants.
-     * @param view
+     * @param view the search button.
      */
     public void search(View view) {
         try {
@@ -116,18 +113,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 latLngs.add(place.getLatLng());
 
                 // Configuring and adding marker
-                //MarkerOptions markerOptions = (new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
                 Marker marker = mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
                 marker.showInfoWindow();
                 markers.add(marker);
-                fillListView();
 
                 // Moving to marker and zooming in
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
 
-                // Connecting latLngs
+                // Connecting markers and zooming
                 connectMarkers();
-                drawCircle();
+                zoomToBounds();
+
+                // Update ListView
+                fillListView();
             }
             else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
@@ -141,6 +139,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * Changes the map type.
+     * @param view the change map button.
+     */
     public void changeMapType(View view){
         if (mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL){
             mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
@@ -167,15 +169,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         try {
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            //mMap.addMarker(new MarkerOptions().position(latLng).title("You are here"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-            //displayMarkers(latLng);
-            //drawCircle(latLng);
         }catch(NullPointerException e){
             Log.e(TAG, e.getMessage());
         }
     }
-
 
     /**
      * Handles operations based on permission results.
@@ -302,22 +300,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * Shows map latLngs around user's location.
-     * @param location the user's location.
+     * Zooms to show all markers.
      */
-    private void displayMarkers(LatLng location){
-        // TODO Needs JSON/JavaScript
-    }
-
-    /**
-     * Draws a circle around the user to illustrate the current marker radius. lklklkj
-     */
-    private void drawCircle(){
+    private void zoomToBounds(){
         builder = new LatLngBounds.Builder();
         float[] radius = new float[1];
         float[] temp = new float[1];
 
-        // Getting the radius of the circle to be drawn
+        // Getting the distance between farthest markers
         if (latLngs.size() >= 2){
             Location.distanceBetween(latLngs.get(0).latitude, latLngs.get(0).longitude, latLngs.get(1).latitude, latLngs.get(1).longitude, radius);
             for (int i = 2; i < latLngs.size(); i++){
@@ -336,13 +326,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             builder.include(marker.getPosition());
         }
         LatLngBounds bounds = builder.build();
-
-//        circleOptions.center(bounds.getCenter());
-//        circleOptions.radius(radius[0]);
-//        circleOptions.fillColor(R.color.colorPrimary);
-//        circleOptions.strokeColor(R.color.colorPrimaryDark);
-//        circleOptions.strokeWidth(5);
-//        mMap.addCircle(circleOptions);
 
         // Zooming out to show bounds
         if (latLngs.size() > 1){
@@ -363,8 +346,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * Updates the ListView.
+     */
     private void fillListView(){
-        locations = new ArrayList<>();
+        locations.clear();
         for (int i = 0; i < markers.size(); i++){
             locations.add(i + 1 + ")\t" + markers.get(i).getTitle());
         }

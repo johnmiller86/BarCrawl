@@ -1,18 +1,11 @@
 package com.example.crawlapp.barcrawl;
 
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -25,18 +18,12 @@ import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 public class LoginActivity extends AppCompatActivity{
 
     private CallbackManager callbackManager;
-    private TextView info;
-    private ImageView profileImgView;
     private LoginButton facebookLoginButton;
     private Button loginButton;
     private PrefUtil prefUtil;
-    private IntentUtil intentUtil;
     private EditText editText_username;
     private EditText editText_password;
     int attemptsCount = 5;
@@ -48,17 +35,13 @@ public class LoginActivity extends AppCompatActivity{
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
-
         prefUtil = new PrefUtil(this);
-        intentUtil = new IntentUtil(this);
-
-        info = (TextView) findViewById(R.id.info);
-        //profileImgView = (ImageView) findViewById(R.id.profile_img);
         facebookLoginButton = (LoginButton) findViewById(R.id.facebookButton);
         editText_username = (EditText) findViewById(R.id.editText_username);
         editText_password = (EditText) findViewById(R.id.editText_password);
         loginButton = (Button) findViewById(R.id.button_login);
         facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Profile profile = Profile.getCurrentProfile();
@@ -86,26 +69,10 @@ public class LoginActivity extends AppCompatActivity{
                 e.printStackTrace();
             }
         });
-
-        // Generating Facebook Keyhash..
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo("com.example.crawlapp.barcrawl", PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
     }
 
     public void Login(View view) {
 
-//        if(editText_username.getText().toString().equals("")&& editText_password.getText().toString().equals("")){
         boolean authenticated = true;
         if(authenticated){
             Intent intent = new Intent(this, StartScreenActivity.class);
@@ -113,15 +80,13 @@ public class LoginActivity extends AppCompatActivity{
             startActivity(intent);
         }
         else{
-            if (attemptsCount == 0) {
-                facebookLoginButton.setEnabled(false);
-                loginButton.setEnabled(false);
-                Toast.makeText(LoginActivity.this, "You have been locked out due to too many incorrect attempts!", Toast.LENGTH_SHORT).show();
-            }
-            else {
-                attemptsCount--;
-                Toast.makeText(LoginActivity.this, "Username and Password are incorrect! You have " + attemptsCount + " attempts remaining.", Toast.LENGTH_SHORT).show();
-            }
+            attemptsCount--;
+            Toast.makeText(LoginActivity.this, "Username and Password are incorrect! You have " + attemptsCount + " attempts remaining.", Toast.LENGTH_SHORT).show();
+        }
+        if (attemptsCount == 0) {
+            facebookLoginButton.setEnabled(false);
+            loginButton.setEnabled(false);
+            Toast.makeText(LoginActivity.this, "You have been locked out due to too many incorrect attempts!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -129,7 +94,6 @@ public class LoginActivity extends AppCompatActivity{
     public void onResume() {
         super.onResume();
         deleteAccessToken();
-        Profile profile = Profile.getCurrentProfile();
     }
 
 
@@ -138,13 +102,7 @@ public class LoginActivity extends AppCompatActivity{
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private String message(Profile profile) {
-        StringBuilder stringBuffer = new StringBuilder();
-        if (profile != null) {
-            stringBuffer.append("Welcome ").append(profile.getName());
-        }
-        return stringBuffer.toString();
-    }
+
 
     private void deleteAccessToken() {
         AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {

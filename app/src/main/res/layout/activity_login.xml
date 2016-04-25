@@ -4,7 +4,8 @@
     android:paddingRight="16dp"
     android:paddingTop="16dp"
     android:paddingBottom="16dp"
-    tools:context="com.example.crawlapp.barcrawl.MapsActivity">
+    tools:context="com.example.crawlapp.barcrawl.MapsActivity"
+    android:background="@drawable/beer">
 
     <TextView
         android:layout_width="wrap_content"
@@ -74,7 +75,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="40dp"
-        android:background="#df2828"
+        android:background="@drawable/button"
         android:textSize="20dp" />
 
     <TextView

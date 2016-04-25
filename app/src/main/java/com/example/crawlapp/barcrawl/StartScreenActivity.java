@@ -38,9 +38,10 @@ public class StartScreenActivity extends AppCompatActivity {
 
     public void LoadCrawl(View view) {
 
-        // Get Data........ Put extra......
+        // Get Data........ Put extras......
 
         Intent intent = new Intent(this, MapsActivity.class);
+        // TODO put extras
         startActivity(intent);
     }
 
