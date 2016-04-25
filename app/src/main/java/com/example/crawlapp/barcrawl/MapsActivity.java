@@ -77,6 +77,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,8 +98,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .setContentUrl(Uri.parse("https://developers.facebook.com"))
                 .build();
         shareButton.setShareContent(content);
-
-        // Share button Listener
         shareButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 postPicture();
@@ -441,7 +440,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             rootView.destroyDrawingCache();
 
             //share dialog
-            AlertDialog.Builder shareDialog = new AlertDialog.Builder(this);
+            final AlertDialog.Builder shareDialog = new AlertDialog.Builder(this);
             shareDialog.setTitle("Share Screen Shot");
             shareDialog.setMessage("Share image to Facebook?");
             shareDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -449,10 +448,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //share the image to Facebook
                     SharePhoto photo = new SharePhoto.Builder().setBitmap(image).build();
                     SharePhotoContent content = new SharePhotoContent.Builder().addPhoto(photo).build();
+                    //shareButton.setShareContent(null);
                     shareButton.setShareContent(content);
                     counter = 1;
                     shareButton.performClick();
-                    dialog.cancel();
                 }
             });
             shareDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
