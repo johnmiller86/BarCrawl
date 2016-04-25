@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -24,6 +25,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareButton;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
@@ -66,6 +71,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<Marker> markers;
     private PolylineOptions polylineOptions;
     private LatLngBounds.Builder builder;
+    private ShareButton shareButton;
+    private Bitmap image;
+    private int counter = 0;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +90,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, locations);
         listView.setAdapter(arrayAdapter);
         registerForContextMenu(listView);
+
+        // Share button stuff
+        shareButton = (ShareButton) findViewById(R.id.shareButton);
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                .setContentUrl(Uri.parse("https://developers.facebook.com"))
+                .build();
+        shareButton.setShareContent(content);
+
+        // Share button Listener
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                postPicture();
+            }
+        });
     }
 
     // Context Menu
@@ -402,6 +426,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (markers.size() > 0) {
             connectMarkers();
             zoomToBounds();
+        }
+    }
+
+    public void postPicture() {
+        //check counter
+        if(counter == 0) {
+            //save the screenshot
+            View rootView = findViewById(android.R.id.content).getRootView();
+            rootView.setDrawingCacheEnabled(true);
+            // creates immutable clone of image
+            image = Bitmap.createBitmap(rootView.getDrawingCache());
+            // destroy
+            rootView.destroyDrawingCache();
+
+            //share dialog
+            AlertDialog.Builder shareDialog = new AlertDialog.Builder(this);
+            shareDialog.setTitle("Share Screen Shot");
+            shareDialog.setMessage("Share image to Facebook?");
+            shareDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    //share the image to Facebook
+                    SharePhoto photo = new SharePhoto.Builder().setBitmap(image).build();
+                    SharePhotoContent content = new SharePhotoContent.Builder().addPhoto(photo).build();
+                    shareButton.setShareContent(content);
+                    counter = 1;
+                    shareButton.performClick();
+                    dialog.cancel();
+                }
+            });
+            shareDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            shareDialog.show();
+        }
+        else {
+            counter = 0;
+            shareButton.setShareContent(null);
         }
     }
 }

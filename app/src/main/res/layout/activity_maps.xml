@@ -26,7 +26,17 @@
             android:id="@+id/typeButton"
             android:onClick="changeMapType"
             android:background="@drawable/button"
-            android:layout_alignParentEnd="true" />
+            android:layout_toRightOf="@+id/searchButton"
+            android:layout_marginLeft="5dp"/>
+
+        <com.facebook.share.widget.ShareButton
+            android:id="@+id/shareButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_alignTop="@+id/typeButton"
+            android:layout_alignBottom="@+id/typeButton"
+            android:layout_alignParentEnd="true"/>
 
         <ListView
             android:layout_width="match_parent"
