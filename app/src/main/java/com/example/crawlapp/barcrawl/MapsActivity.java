@@ -94,10 +94,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Share button stuff
         shareButton = (ShareButton) findViewById(R.id.shareButton);
-        ShareLinkContent content = new ShareLinkContent.Builder()
-                .setContentUrl(Uri.parse("https://developers.facebook.com"))
-                .build();
-        shareButton.setShareContent(content);
+//        ShareLinkContent content = new ShareLinkContent.Builder()
+//                .setContentUrl(Uri.parse("https://developers.facebook.com"))
+//                .build();
+//        shareButton.setShareContent(content);
+
+        shareButton.setEnabled(true);
+
+
         shareButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 postPicture();
@@ -105,7 +109,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    // Context Menu
+    // Context Menu -- to remove items from the ListView
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -119,17 +123,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch(item.getItemId()){
 
+            // Remove was clicked
             case R.id.remove:
 
                 // Removing item
-                locations.remove(info.position);
                 markers.remove(info.position);
-                //latLngs.remove(info.position);
-                arrayAdapter.notifyDataSetChanged();
+
+                // Resetting map and ListView
                 resetMap();
+                fillListView();
                 return true;
 
             default:
+                // Do nothing user cancelled
                 return super.onContextItemSelected(item);
         }
     }
@@ -140,20 +146,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     public void search(View view) {
         try {
+
+            // Configuring Autocomplete
             AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
                     .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ESTABLISHMENT)
                     .build();
 
+            // Launching Autocomplete search Activity
             Intent intent =
                     new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
                             .setFilter(typeFilter)
                             .build(this);
             startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
-        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
+        }
+
+        // Services unavailable
+        catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
             Log.e(TAG, e.getMessage());
         }
     }
 
+    // Getting result from Autocomplete Activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
@@ -382,6 +395,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (markers.size() > 1){
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 80));
         }
+
+        // If only one Marker just zoom to that Marker
         else{
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markers.get(0).getPosition(), 15));
         }
@@ -391,13 +406,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Draws lines between markers.
      */
     private void connectMarkers(){
+
+        // Connect if more than one marker
         if (markers.size() > 1){
+
+            // Configuring lines visual properties
             polylineOptions = new PolylineOptions();
             polylineOptions.color(Color.RED);
             polylineOptions.width(5);
+
+            // Adding all lines to the PolylineOptions object
             for (Marker marker : markers){
                 polylineOptions.add(marker.getPosition());
             }
+
+            // Finally adding the PolylineOptions object to the map
             mMap.addPolyline(polylineOptions);
         }
     }
@@ -406,22 +429,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Updates the ListView.
      */
     private void fillListView(){
+
+        // Clearing ArrayList related to the ListView
         locations.clear();
+
+        // Populating ArrayList
         for (int i = 0; i < markers.size(); i++){
             locations.add((i + 1) + ")\t" + markers.get(i).getTitle());
         }
+
+        // Updating ListView
         arrayAdapter.notifyDataSetChanged();
     }
 
     /**
-     * Rebuilds the map after clearing.
+     * Rebuilds the map after removing a Marker.
      */
     private void resetMap(){
+
+        // Clearing map objects
         mMap.clear();
+
+        // Removing lines
         polylineOptions = new PolylineOptions();
+
+        // Adding markers that weren't removed
         for (Marker marker : markers){
             mMap.addMarker(new MarkerOptions().position(marker.getPosition()).title(marker.getTitle()));
         }
+
+        // Zooming to bounds if there are markers.
         if (markers.size() > 0) {
             connectMarkers();
             zoomToBounds();
@@ -430,40 +467,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void postPicture() {
         //check counter
-        if(counter == 0) {
-            //save the screenshot
-            View rootView = findViewById(android.R.id.content).getRootView();
-            rootView.setDrawingCacheEnabled(true);
-            // creates immutable clone of image
-            image = Bitmap.createBitmap(rootView.getDrawingCache());
-            // destroy
-            rootView.destroyDrawingCache();
+//        if(counter == 0) {
+//            //save the screenshot
+//            View rootView = findViewById(android.R.id.content).getRootView();
+//            rootView.setDrawingCacheEnabled(true);
+//            // creates immutable clone of image
+//            image = Bitmap.createBitmap(rootView.getDrawingCache());
+//            // destroy
+//            rootView.destroyDrawingCache();
+//
+//            //share dialog
+//            final AlertDialog.Builder shareDialog = new AlertDialog.Builder(this);
+//            shareDialog.setTitle("Share Screen Shot");
+//            shareDialog.setMessage("Share image to Facebook?");
+//            shareDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int which) {
+//
+//                    //share the image to Facebook
+//                    dialog.cancel();
+//                    SharePhoto photo = new SharePhoto.Builder().setBitmap(image).build();
+//                    SharePhotoContent content = new SharePhotoContent.Builder().addPhoto(photo).build();
+//                    shareButton.setShareContent(content);
+//                    counter = 1;
+//                    shareButton.performClick();
+//                }
+//            });
+//            shareDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int which) {
+//                    dialog.cancel();
+//                }
+//            });
+//            shareDialog.show();
+//        }
+//        else {
+//            counter = 0;
+//            shareButton.setShareContent(null);
+//        }
 
-            //share dialog
-            final AlertDialog.Builder shareDialog = new AlertDialog.Builder(this);
-            shareDialog.setTitle("Share Screen Shot");
-            shareDialog.setMessage("Share image to Facebook?");
-            shareDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    //share the image to Facebook
-                    SharePhoto photo = new SharePhoto.Builder().setBitmap(image).build();
-                    SharePhotoContent content = new SharePhotoContent.Builder().addPhoto(photo).build();
-                    //shareButton.setShareContent(null);
-                    shareButton.setShareContent(content);
-                    counter = 1;
-                    shareButton.performClick();
-                }
-            });
-            shareDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            shareDialog.show();
-        }
-        else {
-            counter = 0;
-            shareButton.setShareContent(null);
-        }
+
     }
 }
