@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 
 public class StartScreenActivity extends AppCompatActivity {
 
+    // UI Components
     private TextView welcomeTextView;
     private ImageView profilePic;
 
@@ -18,30 +19,45 @@ public class StartScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_screen);
+
+        // Linking UI Components
         welcomeTextView = (TextView) findViewById(R.id.textView2);
         profilePic = (ImageView) findViewById(R.id.imageView);
 
+        // Intent to receive login information from LoginActivity
         Intent intent = getIntent();
-        // Greeting user
-        welcomeTextView.setText("Welcome " + intent.getStringExtra("USERNAME"));
 
-        // If Facebook show picture
-        Glide.with(StartScreenActivity.this)
-                .load(intent.getStringExtra("PROFILE_IMAGE_URL"))
-                .into(profilePic);
+        // Greeting user
+        String greeting = "Welcome " + intent.getStringExtra("USERNAME");
+        welcomeTextView.setText(greeting);
+
+        // If Facebook show picture in the ImageView
+        Glide.with(StartScreenActivity.this).load(intent.getStringExtra("PROFILE_IMAGE_URL")).into(profilePic);
     }
 
+    /**
+     * Create a new crawl button listener.
+     * @param view the create crawl button.
+     */
     public void CreateCrawl(View view) {
+
+        // MapsActivity Intent
         Intent intent = new Intent(this, MapsActivity.class);
+
+        // Launching MapsActivity
         startActivity(intent);
     }
 
+    /**
+     * Loads a previously created crawl.
+     * @param view the load crawl button.
+     */
     public void LoadCrawl(View view) {
 
-        // Get Data........ Put extras......
-
+        // MapsActivity Intent
         Intent intent = new Intent(this, MapsActivity.class);
-        // TODO put extras
+        // TODO Load some data, for Intent extras
+        // Launching MapsActivity
         startActivity(intent);
     }
 

@@ -20,6 +20,7 @@ import com.facebook.login.widget.LoginButton;
 
 public class LoginActivity extends AppCompatActivity{
 
+    // UI/Facebook Components
     private CallbackManager callbackManager;
     private LoginButton facebookLoginButton;
     private Button loginButton;
@@ -32,38 +33,56 @@ public class LoginActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Initializing Facebook
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
+
+        // SharedPreferences to keep user logged in
         prefUtil = new PrefUtil(this);
+
+        // Linking UI Components
         facebookLoginButton = (LoginButton) findViewById(R.id.facebookButton);
         editText_username = (EditText) findViewById(R.id.editText_username);
         editText_password = (EditText) findViewById(R.id.editText_password);
         loginButton = (Button) findViewById(R.id.button_login);
+
+        // Listener for FacebookLoginButton
         facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
+            // User was successfully logged in
             @Override
             public void onSuccess(LoginResult loginResult) {
+
+                // Get their profile
                 Profile profile = Profile.getCurrentProfile();
 
+                // Get their userId and accessToken
                 String userId = loginResult.getAccessToken().getUserId();
                 String accessToken = loginResult.getAccessToken().getToken();
 
-                // save accessToken to SharedPreference
+                // Save accessToken to SharedPreferences
                 prefUtil.saveAccessToken(accessToken);
 
+                // The link to their profile picture
                 String profileImgUrl = "https://graph.facebook.com/" + userId + "/picture?type=large";
 
+                // Creating Intent for the StartScreenActivity (next activity)
                 Intent intent = new Intent(LoginActivity.this, StartScreenActivity.class);
+
+                // Passing username and profile picture link to StartScreenActivity
                 intent.putExtra("USERNAME", profile.getName());
                 intent.putExtra("PROFILE_IMAGE_URL", profileImgUrl);
+
+                // Launching StartScreenActivity
                 startActivity(intent);
-//
             }
 
+            // The user cancelled the login, do nothing
             @Override
             public void onCancel() {}
 
+            // There was an error logging in, print out the errors
             @Override
             public void onError(FacebookException e) {
                 e.printStackTrace();
@@ -71,25 +90,49 @@ public class LoginActivity extends AppCompatActivity{
         });
     }
 
+    /**
+     * Login without Facebook button listener.
+     * @param view the login button.
+     */
     public void Login(View view) {
 
+        // Always allowing access for testing purposes
         boolean authenticated = true;
+
+        // TODO store users and passwords to authenticate users
+
+        // When authenticated
         if(authenticated){
+
+            // Create Intent for StartScreenActivity
             Intent intent = new Intent(this, StartScreenActivity.class);
+
+            // Passing username to StartScreenActivity
             intent.putExtra("USERNAME", editText_username.getText().toString());
+
+            // Launching StartScreenActivity
             startActivity(intent);
         }
+
+        // Failed to authenticate
         else{
+
+            // Decrement remaining attempts and prompt user
             attemptsCount--;
             Toast.makeText(LoginActivity.this, "Username and Password are incorrect! You have " + attemptsCount + " attempts remaining.", Toast.LENGTH_SHORT).show();
         }
+
+        // The user has exceeded the attempt limit
         if (attemptsCount == 0) {
+
+            // Disable the buttons and inform the user they have been locked out
             facebookLoginButton.setEnabled(false);
             loginButton.setEnabled(false);
             Toast.makeText(LoginActivity.this, "You have been locked out due to too many incorrect attempts!", Toast.LENGTH_SHORT).show();
         }
     }
 
+    // Delete AccessToken on resume, it may be a different user
     @Override
     public void onResume() {
         super.onResume();
@@ -97,24 +140,27 @@ public class LoginActivity extends AppCompatActivity{
     }
 
 
+    // Handles results from the FacebookLogin Activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-
-
+    /**
+     * Deletes the AccessToken upon sign out.
+     */
     private void deleteAccessToken() {
+
+        // AccessTokenTracker monitors the AccessToken
         AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
             @Override
-            protected void onCurrentAccessTokenChanged(
-                    AccessToken oldAccessToken,
-                    AccessToken currentAccessToken) {
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
 
+                // User logged out
                 if (currentAccessToken == null){
-                    //User logged out
+
+                    // Clear token
                     prefUtil.clearToken();
-                   // clearUserArea();
                 }
             }
         };
