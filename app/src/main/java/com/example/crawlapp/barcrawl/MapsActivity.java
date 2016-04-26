@@ -63,7 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // Debug tag
     private final String TAG = "MapsActivity Tag";
 
-    // UI Components/Instance Vars
+    // UI Components/Instance Variables
     private GoogleMap mMap;
     private ListView listView;
     private ArrayList<String> locations;
@@ -169,10 +169,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // Getting result from Autocomplete Activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // Request came from the Autocomplete Activity
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+
+            // There wasn't an issue finding a place
             if (resultCode == RESULT_OK) {
 
-                // Getting Establishment
+                // Getting place
                 Place place = PlaceAutocomplete.getPlace(this, data);
 
                 // Configuring and adding marker
@@ -207,9 +211,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @param view the change map button.
      */
     public void changeMapType(View view){
+
+        // If the map is normal, switch to satellite
         if (mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL){
             mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         }
+
+        // If the map is satellite, switch to normal
         else{
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         }
@@ -219,6 +227,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        // DON'T WORRY ABOUT THIS MARSHMALLOW ONLY PERMISSIONS.......................
         // Map Permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
@@ -226,6 +235,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
 
+        // HERE'S WHERE IT FOCUSES ON YOUR LOCATION WHEN IT FIRST LOADS
         // Getting current location
         mMap.setMyLocationEnabled(true);
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -238,6 +248,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    // JALYN, DON'T WORRY ABOUT THIS, THIS IS ONLY FOR MARSHMALLOW, I HAD TO DO IT BECAUSE I HAVE AN S7 RUNNING THE NEW ANDROID.............
     /**
      * Handles operations based on permission results.
      * @param requestCode the request code.
@@ -353,6 +364,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    // DON'T WORRY ABOUT THIS EITHER.............................................
     /**
      * Opens the app's settings page in AppManager.
      */
@@ -367,21 +379,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Zooms to show all markers.
      */
     private void zoomToBounds(){
+
+        // Creating bounds builder
         builder = new LatLngBounds.Builder();
+
+        // Float arrays to store distance between Markers
         float[] radius = new float[1];
         float[] temp = new float[1];
 
-        // Getting the distance between farthest markers
+        // Getting the distance between farthest Markers
         if (markers.size() > 1){
+
+            // Finding distance between first two Markers
             Location.distanceBetween(markers.get(0).getPosition().latitude, markers.get(0).getPosition().longitude, markers.get(1).getPosition().latitude, markers.get(1).getPosition().longitude, radius);
+
+            // If more than two find distance between the two furthest from each other
             for (int i = 2; i < markers.size(); i++){
+
+                // Getting distance between the next two
                 Location.distanceBetween(markers.get(i - 1).getPosition().latitude, markers.get(i - 1).getPosition().longitude, markers.get(i).getPosition().latitude, markers.get(i).getPosition().longitude, temp);
+
+                // If further apart then the last two, store the distance as the radius
                 if (temp[0] > radius[0]){
                     radius[0] = temp[0];
                 }
             }
         }
+
+        // There's either 1 or 0 Markers
         else{
+
+            // Radius is zero
             radius[0] = 0;
         }
 
@@ -389,6 +417,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (Marker marker : markers){
             builder.include(marker.getPosition());
         }
+
+        // Building bounds
         LatLngBounds bounds = builder.build();
 
         // Zooming out to show bounds
@@ -465,7 +495,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * Screenshots device and allows posting to Facebook.
+     */
     public void postPicture() {
+
+        // TODO fix post function
         //check counter
 //        if(counter == 0) {
 //            //save the screenshot
@@ -503,7 +538,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //            counter = 0;
 //            shareButton.setShareContent(null);
 //        }
-
-
     }
 }
