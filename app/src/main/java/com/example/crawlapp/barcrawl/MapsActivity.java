@@ -453,7 +453,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Removing lines
         polylineOptions = new PolylineOptions();
 
-        // Adding markers that weren't removed //
+        // Adding markers that weren't removed
         for (Marker marker : markers){
             mMap.addMarker(new MarkerOptions().position(marker.getPosition()).title(marker.getTitle()));
         }
