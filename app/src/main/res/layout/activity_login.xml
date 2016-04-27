@@ -26,7 +26,7 @@
         android:id="@+id/textView"
         android:textSize="25dp"
         android:layout_marginBottom="75dp"
-        android:layout_above="@+id/editText_password"
+        android:layout_above="@+id/editTextConfirmPassword"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:inputType="textCapWords"
         android:ems="10"
-        android:id="@+id/editText_username"
+        android:id="@+id/editTextPassword"
         android:layout_alignTop="@+id/textView"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -58,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:id="@+id/editText_password"
+        android:id="@+id/editTextConfirmPassword"
         android:layout_alignBottom="@+id/textView3"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -66,17 +66,17 @@
         android:layout_toEndOf="@+id/textView" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_login"
-        android:id="@+id/button_login"
-        android:onClick="Login"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="40dp"
-        android:background="@drawable/button"
-        android:textSize="20dp" />
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/button_login"
+    android:id="@+id/button_login"
+    android:onClick="Login"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentEnd="true"
+    android:layout_marginBottom="40dp"
+    android:background="@drawable/button"
+    android:textSize="20dp" />
 
     <TextView
         android:layout_width="wrap_content"

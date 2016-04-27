@@ -43,8 +43,8 @@ public class LoginActivity extends AppCompatActivity{
 
         // Linking UI Components
         facebookLoginButton = (LoginButton) findViewById(R.id.facebookButton);
-        editText_username = (EditText) findViewById(R.id.editText_username);
-        editText_password = (EditText) findViewById(R.id.editText_password);
+        editText_username = (EditText) findViewById(R.id.editTextPassword);
+        editText_password = (EditText) findViewById(R.id.editTextConfirmPassword);
         loginButton = (Button) findViewById(R.id.button_login);
 
         // Listener for FacebookLoginButton

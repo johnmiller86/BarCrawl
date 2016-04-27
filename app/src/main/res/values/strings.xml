@@ -19,4 +19,5 @@
     <string name="title_activity_access_token">AccessTokenActivity</string>
     <string name="title_activity_show_access_token">ShowAccessTokenActivity</string>
     <string name="profile_pic">Facebook Profile Picture</string>
+    <string name="register_an_account">Register an Account</string>
 </resources>
