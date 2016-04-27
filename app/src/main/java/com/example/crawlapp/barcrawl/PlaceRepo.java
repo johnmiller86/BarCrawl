@@ -14,18 +14,20 @@ public class PlaceRepo{
 
     public static String createTable(){
         return "CREATE TABLE " + Place.TABLE  + "("
-                + Place.KEY_PLACE_ID  + "   PRIMARY KEY,"
-                + Place.KEY_PLACE_NAME + " TEXT,"
-                + Place.KEY_PLACE_LAT + " TEXT,"
-                + Place.KEY_PLACE_LNG + " TEXT)";
+                + Place.KEY_PLACE_ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + User.KEY_USER_ID + " INTEGER,"
+                + Place.KEY_PLACE_NAME + " TEXT, "
+                + Place.KEY_PLACE_LAT + " TEXT, "
+                + Place.KEY_PLACE_LNG + " TEXT, "
+                + "FOREIGN KEY(" + User.KEY_USER_ID + ") REFERENCES " + User.TABLE + "(" + User.KEY_USER_ID + "))";
     }
 
 
-    public int insert(Place place) {
+    public int insert(Place place, User user) {
         int placeId;
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         ContentValues values = new ContentValues();
-        values.put(Place.KEY_PLACE_ID, place.getPlaceId());
+        values.put(User.KEY_USER_ID, user.getUserId());
         values.put(Place.KEY_PLACE_NAME, place.getPlaceName());
         values.put(Place.KEY_PLACE_LAT, place.getPlaceLat());
         values.put(Place.KEY_PLACE_LNG, place.getPlaceLng());
@@ -33,7 +35,6 @@ public class PlaceRepo{
         // Inserting Row
         placeId = (int) db.insert(Place.TABLE, null, values);
         DatabaseManager.getInstance().closeDatabase();
-
         return placeId;
     }
 
