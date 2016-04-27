@@ -29,6 +29,9 @@ public class LoginActivity extends AppCompatActivity{
     private EditText editText_password;
     int attemptsCount = 5;
 
+    // Database Helper
+    private static DBHelper dbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +43,10 @@ public class LoginActivity extends AppCompatActivity{
 
         // SharedPreferences to keep user logged in
         prefUtil = new PrefUtil(this);
+
+        // Database Manager
+        dbHelper = new DBHelper(this.getApplicationContext());
+        DatabaseManager.initializeInstance(dbHelper);
 
         // Linking UI Components
         facebookLoginButton = (LoginButton) findViewById(R.id.facebookButton);
