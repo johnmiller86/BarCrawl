@@ -1,6 +1,7 @@
 package com.example.crawlapp.barcrawl;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class UserRepo {
@@ -32,6 +33,24 @@ public class UserRepo {
         DatabaseManager.getInstance().closeDatabase();
 
         return userId;
+    }
+
+    public boolean userExists(String username){
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + User.TABLE + " WHERE " + User.KEY_USERNAME + "=?", new String[]{username});
+        if (cursor != null && cursor.getCount() > 0){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean passwordCorrect(String username, String password){
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + User.TABLE + " WHERE " + User.KEY_USERNAME + "=? AND " + User.KEY_PASSWORD + "=?", new String[]{username, password});
+        if (cursor != null && cursor.getCount() > 0){
+            return true;
+        }
+        return false;
     }
 
 

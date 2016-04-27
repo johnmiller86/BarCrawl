@@ -1,8 +1,6 @@
 package com.example.crawlapp.barcrawl;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
@@ -30,7 +28,7 @@ public class RegisterActivity extends AppCompatActivity {
      * Registers a new account.
      * @param view the search button.
      */
-    public void search(View view){
+    public void registerAccount(View view){
 
         // Validating input
          if (usernameEditText.getText().toString() == null || usernameEditText.getText().toString().equals("")){
@@ -46,11 +44,22 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(RegisterActivity.this, "Password and confirmation do not match!!", Toast.LENGTH_SHORT).show();
         }
         else{
-             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-             SharedPreferences.Editor editor = sp.edit();
-             editor.putString("USERNAME", usernameEditText.getText().toString());
-             editor.putString("PASSWORD", passwordEditText.getText().toString());
-             editor.apply();
+
+             // User object
+             User user = new User();
+
+             // User Database functions object
+             UserRepo userRepo = new UserRepo();
+
+             // Configuring user
+             user.setUsername(usernameEditText.getText().toString());
+             user.setPassword(passwordEditText.getText().toString());
+
+             // Inserting
+             userRepo.insert(user);
+
+             // Finished registering, exit
+             finish();
          }
     }
 }

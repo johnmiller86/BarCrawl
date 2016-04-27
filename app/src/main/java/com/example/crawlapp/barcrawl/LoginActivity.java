@@ -103,40 +103,47 @@ public class LoginActivity extends AppCompatActivity{
      */
     public void Login(View view) {
 
-        // Always allowing access for testing purposes
-        boolean authenticated = true;
+        User user = new User();
+        UserRepo userRepo = new UserRepo();
 
-        // TODO store users and passwords to authenticate users
+        user.setUsername(editText_username.getText().toString());
+        user.setPassword(editText_password.getText().toString());
 
-        // When authenticated
-        if(authenticated){
+        // Verifying user exists
+        if (!userRepo.userExists(user.getUsername())){
+
+            // User not found
+            Toast.makeText(this, "User not found!!", Toast.LENGTH_SHORT).show();
+        }
+
+        // Verifying password is correct
+        else if (!userRepo.passwordCorrect(user.getUsername(), user.getPassword())){
+
+            // Incorrect password
+            Toast.makeText(LoginActivity.this, "Password is incorrect!!", Toast.LENGTH_SHORT).show();
+        }
+
+        // Logging in
+        else{
 
             // Create Intent for StartScreenActivity
             Intent intent = new Intent(this, StartScreenActivity.class);
 
             // Passing username to StartScreenActivity
-            intent.putExtra("USERNAME", editText_username.getText().toString());
+            intent.putExtra("USERNAME", user.getUsername());
 
             // Launching StartScreenActivity
             startActivity(intent);
         }
+    }
 
-        // Failed to authenticate
-        else{
+    public void Register(View view){
 
-            // Decrement remaining attempts and prompt user
-            attemptsCount--;
-            Toast.makeText(LoginActivity.this, "Username and Password are incorrect! You have " + attemptsCount + " attempts remaining.", Toast.LENGTH_SHORT).show();
-        }
+        // Create Intent for RegisterActivity
+        Intent intent = new Intent(this, RegisterActivity.class);
 
-        // The user has exceeded the attempt limit
-        if (attemptsCount == 0) {
-
-            // Disable the buttons and inform the user they have been locked out
-            facebookLoginButton.setEnabled(false);
-            loginButton.setEnabled(false);
-            Toast.makeText(LoginActivity.this, "You have been locked out due to too many incorrect attempts!", Toast.LENGTH_SHORT).show();
-        }
+        // Launching RegisterActivity
+        startActivity(intent);
     }
 
     // Delete AccessToken on resume, it may be a different user
