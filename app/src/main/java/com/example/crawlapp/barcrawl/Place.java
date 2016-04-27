@@ -9,30 +9,38 @@ public class Place {
     public static final String KEY_PLACE_LAT = "place_lat";
     public static final String KEY_PLACE_LNG = "place_lng";
 
-    private String crawlId, crawlName, crawlDate;
+    private String placeId, placeName, placeLat, placeLng;
 
 
-    public String getCrawlId() {
-        return crawlId;
+    public String getPlaceId() {
+        return placeId;
     }
 
-    public void setCrawlId(String crawlId) {
-        this.crawlId = crawlId;
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
 
-    public String getCrawlName() {
-        return crawlName;
+    public String getPlaceName() {
+        return placeName;
     }
 
-    public void setCrawlName(String crawlName) {
-        this.crawlName = crawlName;
+    public void setPlaceName(String placeName) {
+        this.placeName = placeName;
     }
 
-    public String getCrawlDate() {
-        return crawlDate;
+    public String getPlaceLat() {
+        return placeLat;
     }
 
-    public void setCrawlDate(String crawlDatea) {
-        this.crawlDate = crawlDate;
+    public void setPlaceLat(String placeLat) {
+        this.placeLat = placeLat;
+    }
+
+    public String getPlaceLng() {
+        return placeLng;
+    }
+
+    public void setPlaceLng(String placeLng) {
+        this.placeLng = placeLng;
     }
 }
