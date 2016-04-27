@@ -1,13 +1,56 @@
 package com.example.crawlapp.barcrawl;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    // UI Components
+    private EditText usernameEditText, passwordEditText, confirmPasswordEditText;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        
+        // Linking UI Components
+        usernameEditText = (EditText) findViewById(R.id.editTextUsername);
+        passwordEditText = (EditText) findViewById(R.id.editTextPassword);
+        confirmPasswordEditText = (EditText) findViewById(R.id.editTextConfirmPassword);
+    }
+
+
+
+    /**
+     * Registers a new account.
+     * @param view the search button.
+     */
+    public void search(View view){
+
+        // Validating input
+         if (usernameEditText.getText().toString() == null || usernameEditText.getText().toString().equals("")){
+             Toast.makeText(RegisterActivity.this, "You must choose a username!!", Toast.LENGTH_SHORT).show();
+         }
+        else if (passwordEditText.getText().toString() == null || passwordEditText.getText().toString().equals("")){
+            Toast.makeText(RegisterActivity.this, "You must choose a password!!", Toast.LENGTH_SHORT).show();
+        }
+        else if (usernameEditText.getText().toString() == null || usernameEditText.getText().toString().equals("")){
+            Toast.makeText(RegisterActivity.this, "You must confirm your password!!", Toast.LENGTH_SHORT).show();
+        }
+        else if (!passwordEditText.getText().toString().equals(confirmPasswordEditText.getText().toString())){
+            Toast.makeText(RegisterActivity.this, "Password and confirmation do not match!!", Toast.LENGTH_SHORT).show();
+        }
+        else{
+             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+             SharedPreferences.Editor editor = sp.edit();
+             editor.putString("USERNAME", usernameEditText.getText().toString());
+             editor.putString("PASSWORD", passwordEditText.getText().toString());
+             editor.apply();
+         }
     }
 }
