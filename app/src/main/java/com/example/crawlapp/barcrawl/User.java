@@ -4,19 +4,19 @@ public class User {
 
     public static final String TAG = User.class.getSimpleName();
     public static final String TABLE = "users";
-    public static final String KEY_USER_ID = "id";
+    public static final String KEY_USER_ID = "user_id";
     public static final String KEY_USERNAME = "username";
     public static final String KEY_PASSWORD = "password";
 
-    private String id, username, password;
+    private String userId, username, password;
 
 
-    public String getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getUserame() {
