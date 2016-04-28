@@ -70,7 +70,7 @@ public class NewCrawlActivity extends AppCompatActivity {
 
                 // MapsActivity Intent
                 Intent intent = new Intent(this, MapsActivity.class);
-                intent.putExtra("NEW_CRAWL_NAME", crawlNameEditText.getText());
+                intent.putExtra("NEW_CRAWL_NAME", crawlNameEditText.getText().toString());
 
                 // Launching MapsActivity
                 startActivity(intent);

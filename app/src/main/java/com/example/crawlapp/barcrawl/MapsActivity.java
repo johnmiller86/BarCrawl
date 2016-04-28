@@ -108,11 +108,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Getting intent
         intent = getIntent();
-
-        // If LoadActivity, load data
-        if (intent.hasExtra("CRAWL")){
-            loadCrawl();
-        }
     }
 
     // Context Menu -- to remove items from the ListView
@@ -251,6 +246,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
         }catch(NullPointerException e){
             Log.e(TAG, e.getMessage());
+        }
+
+        // If LoadActivity, load data
+        if (intent.hasExtra("CRAWL")){
+            loadCrawl();
         }
     }
 
@@ -528,7 +528,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
              // Saved, finish
-             finish();
+             Intent intent = new Intent(this, StartScreenActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -548,6 +549,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             for (com.example.crawlapp.barcrawl.Place p : places){
                 LatLng latLng = new LatLng(Float.parseFloat(p.getPlaceLat()), Float.parseFloat(p.getPlaceLng()));
                 Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(p.getPlaceName()));
+                //marker.showInfoWindow();
                 markers.add(marker);
             }
 
