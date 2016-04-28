@@ -8,14 +8,14 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@drawable/beer"
-    tools:context="com.example.crawlapp.barcrawl.RegisterActivity">
+    tools:context=".NewCrawlActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/register_an_account"
-        android:id="@+id/registerTextView"
+        android:text="@string/create_a_crawl"
+        android:id="@+id/createCrawlTextView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:singleLine="false"
@@ -25,71 +25,52 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Choose Username"
-        android:id="@+id/textViewUsername"
+        android:text="@string/crawl_name"
+        android:id="@+id/textViewCrawlName"
         android:textSize="18dp"
-        android:layout_alignBaseline="@+id/editTextUsername"
-        android:layout_alignBottom="@+id/editTextUsername"
+        android:layout_alignBaseline="@+id/editTextCrawlName"
+        android:layout_alignBottom="@+id/editTextCrawlName"
         android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Choose Password"
-        android:id="@+id/textViewPassword"
+        android:text="@string/crawl_date"
+        android:id="@+id/textViewCrawlDate"
         android:textSize="18dp"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 
-    <TextView
+    <DatePicker
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Confirm Password"
-        android:id="@+id/textViewConfirmPassword"
-        android:layout_alignBaseline="@+id/editTextConfirmPassword"
-        android:textSize="18dp"
-        android:layout_alignTop="@+id/editTextConfirmPassword"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/editTextPassword"
+        android:id="@+id/datePicker"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignStart="@+id/editTextUsername" />
+        android:layout_alignTop="@+id/textViewCrawlDate"
+        android:layout_above="@+id/continueButton"
+        android:layout_alignStart="@+id/editTextCrawlName" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="text"
-        android:id="@+id/editTextUsername"
-        android:layout_above="@+id/editTextPassword"
+        android:id="@+id/editTextCrawlName"
+        android:layout_above="@+id/datePicker"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="68dp"
-        android:layout_toEndOf="@+id/textViewUsername" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:id="@+id/editTextConfirmPassword"
-        android:layout_marginBottom="77dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/textViewConfirmPassword" />
+        android:layout_toEndOf="@+id/textViewCrawlName" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/register"
-        android:id="@+id/registerButton"
+        android:text="@string/continue_button"
+        android:id="@+id/continueButton"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:background="@drawable/button"
         android:onClick="registerAccount"/>
+
 </RelativeLayout>
