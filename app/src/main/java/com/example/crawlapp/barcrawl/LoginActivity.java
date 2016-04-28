@@ -27,10 +27,10 @@ public class LoginActivity extends AppCompatActivity{
     private PrefUtil prefUtil;
     private EditText editText_username;
     private EditText editText_password;
-    int attemptsCount = 5;
 
-    // Database Helper
+    // Database
     private static DBHelper dbHelper;
+    public static User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity{
      */
     public void Login(View view) {
 
-        User user = new User();
+        user = new User();
         UserRepo userRepo = new UserRepo();
 
         user.setUsername(editText_username.getText().toString());

@@ -42,7 +42,7 @@ public class StartScreenActivity extends AppCompatActivity {
     public void CreateCrawl(View view) {
 
         // MapsActivity Intent
-        Intent intent = new Intent(this, MapsActivity.class);
+        Intent intent = new Intent(this, NewCrawlActivity.class);
 
         // Launching MapsActivity
         startActivity(intent);

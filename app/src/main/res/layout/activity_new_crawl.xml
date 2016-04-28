@@ -71,6 +71,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:background="@drawable/button"
-        android:onClick="registerAccount"/>
+        android:onClick="continueOn"/>
 
 </RelativeLayout>

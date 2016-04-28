@@ -53,6 +53,17 @@ public class UserRepo {
         return false;
     }
 
+    public int getUserId(String username){
+
+        int userId = -1;
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        Cursor cursor = db.rawQuery("SELECT " + User.KEY_USER_ID + " FROM " + User.TABLE + " WHERE " + User.KEY_USERNAME + "=?", new String[]{username});
+        if (cursor.moveToFirst()){
+            userId = cursor.getInt(cursor.getColumnIndex(User.KEY_USER_ID));
+        }
+        return userId;
+    }
+
 
 
     public void delete() {
