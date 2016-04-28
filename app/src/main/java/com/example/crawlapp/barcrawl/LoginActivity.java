@@ -68,15 +68,16 @@ public class LoginActivity extends AppCompatActivity{
                 String userId = loginResult.getAccessToken().getUserId();
                 String accessToken = loginResult.getAccessToken().getToken();
 
-                // Configuring
-                // TODO Make if exists function
-//                user = new User();
-//                UserRepo userRepo = new UserRepo();
-//                user.setUsername(userId);
-//                user.setPassword("");
-//
-//                // Inserting
-//                userRepo.insert(user);
+                // Configuring User
+                user = new User();
+                UserRepo userRepo = new UserRepo();
+                user.setUsername(userId);
+                user.setPassword("");
+
+                // Inserting
+                if (!userRepo.userExists(user.getUsername())){
+                    userRepo.insert(user);
+                }
 
                 // Save accessToken to SharedPreferences
                 prefUtil.saveAccessToken(accessToken);
