@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.facebook.share.widget.ShareButton;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -71,7 +72,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ShareButton shareButton;
     private Bitmap image;
     private int counter = 0;
-
+    private Intent intent;
 
 
 
@@ -104,6 +105,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 postPicture();
             }
         });
+
+        intent = getIntent();
+        if (intent.hasExtra("CRAWL")){
+            loadCrawl();
+        }
     }
 
     // Context Menu -- to remove items from the ListView
@@ -492,6 +498,60 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    public void saveCrawl(View view){
+
+        // Validating input
+        if (markers.size() == 0){
+            Toast.makeText(this, "You must add at least one bar/restaurant!!", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            ArrayList<com.example.crawlapp.barcrawl.Place> places = new ArrayList<>();
+            PlaceRepo placeRepo = new PlaceRepo();
+
+            // Configuring Places
+            for (Marker marker : markers) {
+
+                com.example.crawlapp.barcrawl.Place place = new com.example.crawlapp.barcrawl.Place();
+                place.setPlaceName(marker.getTitle());
+                place.setPlaceLat(String.valueOf(marker.getPosition().latitude));
+                place.setPlaceLng(String.valueOf(marker.getPosition().longitude));
+            }
+
+             // Inserting
+            for (com.example.crawlapp.barcrawl.Place p : places){
+
+                placeRepo.insert(p, LoginActivity.user, intent.getStringExtra("NEW_CRAWL_NAME"));
+            }
+
+             // Saved, finish
+             finish();
+        }
+    }
+
+    public void loadCrawl(){
+
+        String crawlName = intent.getStringExtra("CRAWL");
+
+        ArrayList<com.example.crawlapp.barcrawl.Place> places = new ArrayList<>();
+        PlaceRepo placeRepo = new PlaceRepo();
+
+        places = placeRepo.getPlaceList(crawlName);
+
+        if (places.size() == 0){
+            Toast.makeText(this, "You have not yet added to this crawl!!", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            for (com.example.crawlapp.barcrawl.Place p : places){
+                LatLng latLng = new LatLng(Float.parseFloat(p.getPlaceLat()), Float.parseFloat(p.getPlaceLng()));
+                Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(p.getPlaceName()));
+                markers.add(marker);
+            }
+
+            // Configuring map and ListView
+            resetMap();
+            fillListView();
+        }
+    }
     /**
      * Screenshots device and allows posting to Facebook.
      */

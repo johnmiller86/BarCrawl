@@ -31,4 +31,5 @@
     <string name="choose_username">Choose Username</string>
     <string name="choose_password">Choose Password</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="save">Save</string>
 </resources>

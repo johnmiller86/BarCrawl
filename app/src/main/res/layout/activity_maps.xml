@@ -44,8 +44,17 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:background="@color/beer"
-            android:layout_below="@+id/searchButton"
+            android:layout_below="@+id/saveButton"
             android:id="@+id/listView" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/save"
+            android:id="@+id/saveButton"
+            android:onClick="saveCrawl"
+            android:background="@drawable/button"
+            android:layout_below="@id/searchButton"
+            android:layout_marginStart="5dp"/>
     </RelativeLayout>
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"

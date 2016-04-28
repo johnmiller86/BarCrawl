@@ -6,20 +6,12 @@ class Place {
     public static final String TABLE = "places";
     public static final String KEY_PLACE_ID = "placeId";
     public static final String KEY_USER_ID = "user_id";
+    public static final String KEY_CRAWL_NAME = "crawl_name";
     public static final String KEY_PLACE_NAME = "place_name";
     public static final String KEY_PLACE_LAT = "place_lat";
     public static final String KEY_PLACE_LNG = "place_lng";
 
-    private String placeId, placeName, placeLat, placeLng;
-
-
-    public String getPlaceId() {
-        return placeId;
-    }
-
-    public void setPlaceId(String placeId) {
-        this.placeId = placeId;
-    }
+    private String placeName, placeLat, placeLng;
 
     public String getPlaceName() {
         return placeName;

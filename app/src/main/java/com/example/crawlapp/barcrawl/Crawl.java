@@ -9,16 +9,8 @@ class Crawl {
     public static final String KEY_CRAWL_NAME = "crawl_name";
     public static final String KEY_CRAWL_DATE = "crawl_date";
 
-    private String crawlId, crawlName, crawlDate;
+    private String crawlName, crawlDate;
 
-
-    public String getCrawlId() {
-        return crawlId;
-    }
-
-    public void setCrawlId(String crawlId) {
-        this.crawlId = crawlId;
-    }
 
     public String getCrawlName() {
         return crawlName;
