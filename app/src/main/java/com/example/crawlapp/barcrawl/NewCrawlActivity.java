@@ -18,7 +18,6 @@ public class NewCrawlActivity extends AppCompatActivity {
 
     // UI Components
     private EditText crawlNameEditText;
-    private DatePicker datePicker;
     private static int y, m, d;
 
     @Override

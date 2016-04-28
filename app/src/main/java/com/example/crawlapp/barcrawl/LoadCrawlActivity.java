@@ -89,7 +89,6 @@ public class LoadCrawlActivity extends AppCompatActivity {
 
             // Updating ListView
             arrayAdapter.notifyDataSetChanged();
-            Toast.makeText(this, crawls.size() + "", Toast.LENGTH_SHORT).show();
         }
 
         if (crawls.size() == 0){

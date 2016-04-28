@@ -515,6 +515,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 place.setPlaceName(marker.getTitle());
                 place.setPlaceLat(String.valueOf(marker.getPosition().latitude));
                 place.setPlaceLng(String.valueOf(marker.getPosition().longitude));
+                places.add(place);
             }
 
              // Inserting
