@@ -106,7 +106,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        // Getting intent
         intent = getIntent();
+
+        // If LoadActivity, load data
         if (intent.hasExtra("CRAWL")){
             loadCrawl();
         }
