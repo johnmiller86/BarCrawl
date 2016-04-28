@@ -8,14 +8,15 @@ public class User {
     public static final String KEY_USERNAME = "username";
     public static final String KEY_PASSWORD = "password";
 
-    private String userId, username, password;
+    private int userId;
+    private String username, password;
 
 
-    public String getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 

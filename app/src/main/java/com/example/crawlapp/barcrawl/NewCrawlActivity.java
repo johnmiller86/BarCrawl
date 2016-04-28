@@ -2,6 +2,7 @@ package com.example.crawlapp.barcrawl;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -26,7 +27,6 @@ public class NewCrawlActivity extends AppCompatActivity {
 
         // Linking UI Components
         crawlNameEditText = (EditText) findViewById(R.id.editTextCrawlName);
-        datePicker = (DatePicker) findViewById(R.id.datePicker);
     }
 
     public void showDatePicker(View view) {
@@ -38,29 +38,43 @@ public class NewCrawlActivity extends AppCompatActivity {
 
     public void continueOn(View view){
 
-        Toast.makeText(this, "Year " + y + " Month " + m + " Day " + d,Toast.LENGTH_SHORT).show();
-//        // Validating input
-//        if (crawlNameEditText.getText().toString() == null || crawlNameEditText.getText().toString().equals("")){
-//            Toast.makeText(NewCrawlActivity.this, "You must choose a crawl name!!", Toast.LENGTH_SHORT).show();
-//        }
-//        else if (!passwordEditText.getText().toString().equals(confirmPasswordEditText.getText().toString())){
-//            Toast.makeText(RegisterActivity.this, "Password and confirmation do not match!!", Toast.LENGTH_SHORT).show();
-//        }
-//        else{
-//
-//            Crawl crawl = new Crawl();
-//            CrawlRepo crawlRepo = new CrawlRepo();
-//
-//            // Configuring crawl
-//            crawl.setCrawlName(crawlNameEditText.getText().toString());
-//            crawl.setCrawlDate(datePicker.getd);
-//
-//            // Inserting
-//            crawlRepo.insert(crawl, LoginActivity.user);
-//
-//            // Finished registering, exit
-//            finish();
-//        }
+        // Validating input
+
+        if (crawlNameEditText.getText().toString() == null || crawlNameEditText.getText().toString().equals("")){
+            Toast.makeText(NewCrawlActivity.this, "You must choose a crawl name!!", Toast.LENGTH_SHORT).show();
+        }
+        else if (d == 0 || m == 0 || y == 0){
+            Toast.makeText(this, "You must choose a crawl date!!", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Crawl crawl = new Crawl();
+            CrawlRepo crawlRepo = new CrawlRepo();
+            UserRepo userRepo = new UserRepo();
+
+            // Configuring crawl
+            crawl.setCrawlName(crawlNameEditText.getText().toString());
+            crawl.setCrawlDate(m + "/" + d + "/" + y);
+
+            int userId = userRepo.getUserId(LoginActivity.user.getUsername());
+
+            // Ensuring userId was retrieved successfully
+            if (userId == -1){
+                Toast.makeText(this, "An internal error occured :(", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                // Setting userId
+                LoginActivity.user.setUserId(userId);
+
+                // Inserting
+                crawlRepo.insert(crawl, LoginActivity.user);
+
+                // MapsActivity Intent
+                Intent intent = new Intent(this, MapsActivity.class);
+
+                // Launching MapsActivity
+                startActivity(intent);
+            }
+        }
     }
 
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
