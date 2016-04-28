@@ -12,6 +12,7 @@
     <string name="create_a_crawl">Create a crawl</string>
     <string name="load_a_crawl">Load a crawl</string>
     <string name="remove">Remove</string>
+    <string name="select_this_crawl">Select this Crawl</string>
 
     <!-- Facebook stuff -->
     <string name="facebook_app_id">570415306452657</string>
@@ -25,4 +26,9 @@
     <string name="crawl_name">Crawl Name</string>
     <string name="crawl_date">Crawl Date</string>
     <string name="continue_button">Continue</string>
+    <string name="bar_crawl">Bar Crawl</string>
+    <string name="select_date">Select Date</string>
+    <string name="choose_username">Choose Username</string>
+    <string name="choose_password">Choose Password</string>
+    <string name="confirm_password">Confirm Password</string>
 </resources>

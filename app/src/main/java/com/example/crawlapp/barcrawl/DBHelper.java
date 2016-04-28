@@ -5,12 +5,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class DBHelper extends SQLiteOpenHelper{
+class DBHelper extends SQLiteOpenHelper{
 
     // Defining the database and table
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "Bar_Crawl";
-    private static final String TAG = DBHelper.class.getSimpleName().toString();
+    private static final String TAG = DBHelper.class.getSimpleName();
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

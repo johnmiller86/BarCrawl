@@ -31,13 +31,13 @@ public class RegisterActivity extends AppCompatActivity {
     public void registerAccount(View view){
 
         // Validating input
-         if (usernameEditText.getText().toString() == null || usernameEditText.getText().toString().equals("")){
+         if (usernameEditText.getText().toString().equals("")){
              Toast.makeText(RegisterActivity.this, "You must choose a username!!", Toast.LENGTH_SHORT).show();
          }
-        else if (passwordEditText.getText().toString() == null || passwordEditText.getText().toString().equals("")){
+        else if (passwordEditText.getText().toString().equals("")){
             Toast.makeText(RegisterActivity.this, "You must choose a password!!", Toast.LENGTH_SHORT).show();
         }
-        else if (usernameEditText.getText().toString() == null || usernameEditText.getText().toString().equals("")){
+        else if (usernameEditText.getText().toString().equals("")){
             Toast.makeText(RegisterActivity.this, "You must confirm your password!!", Toast.LENGTH_SHORT).show();
         }
         else if (!passwordEditText.getText().toString().equals(confirmPasswordEditText.getText().toString())){

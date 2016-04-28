@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -40,7 +41,7 @@ public class NewCrawlActivity extends AppCompatActivity {
 
         // Validating input
 
-        if (crawlNameEditText.getText().toString() == null || crawlNameEditText.getText().toString().equals("")){
+        if (crawlNameEditText.getText().toString().equals("")){
             Toast.makeText(NewCrawlActivity.this, "You must choose a crawl name!!", Toast.LENGTH_SHORT).show();
         }
         else if (d == 0 || m == 0 || y == 0){
@@ -59,7 +60,7 @@ public class NewCrawlActivity extends AppCompatActivity {
 
             // Ensuring userId was retrieved successfully
             if (userId == -1){
-                Toast.makeText(this, "An internal error occured :(", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "An internal error occurred :(", Toast.LENGTH_SHORT).show();
             }
             else{
                 // Setting userId
@@ -79,6 +80,7 @@ public class NewCrawlActivity extends AppCompatActivity {
 
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
+        @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
 

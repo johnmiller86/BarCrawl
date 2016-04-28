@@ -19,15 +19,15 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:singleLine="false"
-        android:textSize="30dp" />
+        android:textSize="30sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Choose Username"
+        android:text="@string/choose_username"
         android:id="@+id/textViewUsername"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:layout_alignBaseline="@+id/editTextUsername"
         android:layout_alignBottom="@+id/editTextUsername"
         android:layout_alignParentStart="true" />
@@ -36,9 +36,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Choose Password"
+        android:text="@string/choose_password"
         android:id="@+id/textViewPassword"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 
@@ -46,10 +46,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Confirm Password"
+        android:text="@string/confirm_password"
         android:id="@+id/textViewConfirmPassword"
         android:layout_alignBaseline="@+id/editTextConfirmPassword"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:layout_alignTop="@+id/editTextConfirmPassword"/>
 
     <EditText

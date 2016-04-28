@@ -1,21 +1,22 @@
 package com.example.crawlapp.barcrawl;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class CrawlRepo{
+import java.util.ArrayList;
 
-    private Crawl crawl;
+class CrawlRepo{
 
     public CrawlRepo(){
-        crawl = new Crawl();
+        Crawl crawl = new Crawl();
     }
 
 
     public static String createTable(){
         return "CREATE TABLE " + Crawl.TABLE  + "("
                 + Crawl.KEY_CRAWL_ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + User.KEY_USER_ID + " INTEGER, "
+                + Crawl.KEY_USER_ID + " INTEGER, "
                 + Crawl.KEY_CRAWL_NAME + " TEXT, "
                 + Crawl.KEY_CRAWL_DATE + " TEXT, "
                 + "FOREIGN KEY(" + User.KEY_USER_ID + ") REFERENCES " + User.TABLE + "(" + User.KEY_USER_ID + "))";
@@ -41,5 +42,17 @@ public class CrawlRepo{
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         db.delete(Crawl.TABLE,null,null);
         DatabaseManager.getInstance().closeDatabase();
+    }
+
+    public ArrayList<String> getCrawlList(int userId){
+
+        ArrayList<String> crawlList = new ArrayList<>();
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        Cursor cursor = db.rawQuery("SELECT " + Crawl.KEY_CRAWL_NAME + " FROM " + Crawl.TABLE + " WHERE " + Crawl.KEY_USER_ID + "=?", new String[]{String.valueOf(userId)});
+        while (cursor.moveToNext()){
+            crawlList.add(cursor.getString(cursor.getColumnIndex(Crawl.KEY_CRAWL_NAME)));
+        }
+        cursor.close();
+        return crawlList;
     }
 }

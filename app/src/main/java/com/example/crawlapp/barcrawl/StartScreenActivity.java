@@ -54,10 +54,10 @@ public class StartScreenActivity extends AppCompatActivity {
      */
     public void LoadCrawl(View view) {
 
-        // MapsActivity Intent
-        Intent intent = new Intent(this, MapsActivity.class);
-        // TODO Load some data, for Intent extras
-        // Launching MapsActivity
+        // LoadCrawlActivity Intent
+        Intent intent = new Intent(this, LoadCrawlActivity.class);
+
+        // Launching LoadCrawlActivity
         startActivity(intent);
     }
 

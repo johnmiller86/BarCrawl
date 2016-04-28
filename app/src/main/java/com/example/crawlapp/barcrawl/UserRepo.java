@@ -4,9 +4,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class UserRepo {
+class UserRepo {
 
-    private User user;
+    private final User user;
 
     public UserRepo(){
         user = new User();
@@ -41,6 +41,8 @@ public class UserRepo {
         if (cursor != null && cursor.getCount() > 0){
             return true;
         }
+        assert cursor != null;
+        cursor.close();
         return false;
     }
 
@@ -50,6 +52,8 @@ public class UserRepo {
         if (cursor != null && cursor.getCount() > 0){
             return true;
         }
+        assert cursor != null;
+        cursor.close();
         return false;
     }
 
@@ -61,6 +65,7 @@ public class UserRepo {
         if (cursor.moveToFirst()){
             userId = cursor.getInt(cursor.getColumnIndex(User.KEY_USER_ID));
         }
+        cursor.close();
         return userId;
     }
 

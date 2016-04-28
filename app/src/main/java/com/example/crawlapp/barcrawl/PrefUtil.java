@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-public class PrefUtil {
+class PrefUtil {
 
-    private Activity activity;
+    private final Activity activity;
 
     // constructor
     public PrefUtil(Activity activity) {

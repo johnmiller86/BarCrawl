@@ -26,8 +26,6 @@
              You can define the keys for the debug and release targets in src/debug/ and src/release/. 
         -->
 
-        <action android:name="android.intent.action.MAIN" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -65,7 +63,10 @@
         <activity
             android:name=".RegisterActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".NewCrawlActivity"></activity>
+        <activity android:name=".NewCrawlActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".LoadCrawlActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

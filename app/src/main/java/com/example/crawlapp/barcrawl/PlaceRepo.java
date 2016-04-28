@@ -3,9 +3,9 @@ package com.example.crawlapp.barcrawl;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
-public class PlaceRepo{
+class PlaceRepo{
 
-    private Place place;
+    private final Place place;
 
     public PlaceRepo(){
         place = new Place();
@@ -15,7 +15,7 @@ public class PlaceRepo{
     public static String createTable(){
         return "CREATE TABLE " + Place.TABLE  + "("
                 + Place.KEY_PLACE_ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + User.KEY_USER_ID + " INTEGER,"
+                + Place.KEY_USER_ID + " INTEGER,"
                 + Place.KEY_PLACE_NAME + " TEXT, "
                 + Place.KEY_PLACE_LAT + " TEXT, "
                 + Place.KEY_PLACE_LNG + " TEXT, "

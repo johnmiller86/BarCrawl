@@ -25,9 +25,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareButton;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -114,7 +111,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.context_menu, menu);
+        menuInflater.inflate(R.menu.context_menu_maps, menu);
     }
 
     @Override
@@ -498,7 +495,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Screenshots device and allows posting to Facebook.
      */
-    public void postPicture() {
+    private void postPicture() {
 
         // TODO fix post function
         //check counter

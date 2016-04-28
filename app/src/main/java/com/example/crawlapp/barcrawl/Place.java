@@ -1,10 +1,11 @@
 package com.example.crawlapp.barcrawl;
 
-public class Place {
+class Place {
 
     public static final String TAG = Place.class.getSimpleName();
     public static final String TABLE = "places";
     public static final String KEY_PLACE_ID = "placeId";
+    public static final String KEY_USER_ID = "user_id";
     public static final String KEY_PLACE_NAME = "place_name";
     public static final String KEY_PLACE_LAT = "place_lat";
     public static final String KEY_PLACE_LNG = "place_lng";
